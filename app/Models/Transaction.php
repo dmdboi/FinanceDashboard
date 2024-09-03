@@ -33,4 +33,13 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+
+    // Save a category to the transaction
+    public function categorize($category_id): void
+    {
+        // Categorize the transaction
+        $this->category_id = $category_id;
+        $this->save();
+    }
 }

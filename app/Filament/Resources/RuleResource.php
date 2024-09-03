@@ -15,6 +15,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
+
+use App\Jobs\IndividualRuleJob;
+
 use App\Models\Category;
 
 class RuleResource extends Resource
@@ -80,7 +85,13 @@ class RuleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Action::make('Duplicate')
+                    ->action(fn(Rule $record) => $record->replicate()->save())->icon('heroicon-o-document-duplicate'),
+                    Action::make('Run')->action(fn(Rule $record) => dispatch(new IndividualRuleJob($record)))->icon('heroicon-o-play'),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -29,35 +29,19 @@ class categorizeTrx implements ShouldQueue
      */
     public function handle(): void
     {
-        // Take the transaction data and run it through the categorization process
+        // Description: Take the transaction data and run it through the categorization process
 
         $rules = Rule::all();
 
         foreach ($rules as $rule) {
             // Check if the rule matches the transaction
-            if ($this->matchesRule($rule)) {
-                $this->categorize($rule);
+            if ($rule->matchesRule($this->trx)) {
+                // Categorize the transaction
+                $this->trx->categorize($rule->category_id);
             }
         }
     }
 
-    public function matchesRule(Rule $rule): bool
-    {
-        if ($rule->operator == 'contains') {
-            return strpos($this->trx[$rule->property], $rule->value) !== false;
-        }
 
-        if ($rule->operator == 'equals') {
-            return $this->trx[$rule->property] == $rule->value;
-        }
 
-        return false;
-    }
-
-    public function categorize($rule): void
-    {
-        // Categorize the transaction
-        $this->trx['category_id'] = $rule->category_id;
-        $this->trx->save();
-    }
 }

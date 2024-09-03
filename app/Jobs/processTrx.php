@@ -45,7 +45,7 @@ class processTrx implements ShouldQueue
 
     public function process($transaction): void
     {
-        // Process the transaction
+        // Description: Process the transaction
 
         // Remove unnecessary characters (such as special characters)
         $transaction = str_replace("\u{A0}", "", $transaction);

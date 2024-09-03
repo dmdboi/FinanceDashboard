@@ -26,4 +26,20 @@ class Rule extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+
+
+    // Check if the rule matches the transaction
+    public function matchesRule(Transaction $trx): bool
+    {
+        if ($this->operator == 'contains') {
+            return strpos($trx[$this->property], $this->value) !== false;
+        }
+
+        if ($this->operator == 'equals') {
+            return $trx[$this->property] == $this->value;
+        }
+
+        return false;
+    }
 }
