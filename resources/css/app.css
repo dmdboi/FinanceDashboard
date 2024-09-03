@@ -1,5 +1,18 @@
 @tailwind base;
 @tailwind components;
+
+.btn {
+    @apply px-4 py-2 font-bold rounded;
+}
+
+.btn-primary {
+    @apply text-white ease-in-out bg-pink-500 hover:bg-pink-600;
+}
+
+.ease-in-out {
+    transition: all 0.3s ease-in-out;
+}
+
 @tailwind utilities;
 
 [x-cloak] {

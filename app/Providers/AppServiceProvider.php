@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Blade::directive('currency', function ($expression) {
+            // Divide by 100 to convert to pounds
+            return "<?php echo '£' . number_format($expression / 100, 2); ?>";
+        });
     }
 }
