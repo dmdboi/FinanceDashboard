@@ -82,7 +82,8 @@ class TransactionResource extends Resource
                 TextColumn::make('amount')
                     ->label('Amount')
                     ->formatStateUsing(fn(string $state): string => $state / 100)
-                    ->searchable(),
+                    ->searchable()
+                    ->money('GBP', 100),
                 IconColumn::make('type')
                     ->label('Type')
                     ->icon(fn(string $state): string => match ($state) {

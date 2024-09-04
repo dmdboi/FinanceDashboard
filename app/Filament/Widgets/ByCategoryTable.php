@@ -39,11 +39,7 @@ class ByCategoryTable extends BaseWidget
                 TextColumn::make('total')
                     ->label('Total')
             ])
-            ->defaultSort('total', 'desc');
-    }
-
-    public function getLabel(): string
-    {
-        return 'By Category';
+            ->defaultSort('total', 'desc')
+            ->paginated(false);
     }
 }
