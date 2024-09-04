@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Category;
 use App\Models\Transaction;
 use Filament\Widgets\ChartWidget;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Number;
 
 class TrxCategoriesChart extends ChartWidget
 {
@@ -15,12 +15,16 @@ class TrxCategoriesChart extends ChartWidget
     protected function getData(): array
     {
 
-        // Fetch all transactions within the last 30 days with their category if they have one, grouped by category with the sum of the amount column
-        $trx = Transaction::where('date', '>=', now()->subDays(30))
-            ->with('category')
+        // Fetch the total transactions for each category in the last 30 days
+        $trx = Transaction::query()
+            ->select([
+                'category_id',
+                DB::raw('COUNT(*) as total')
+            ])
+            ->where('trx_date', '>=', now()->subDays(30))
             ->whereNotNull('category_id')
             ->groupBy('category_id')
-            ->select('category_id', DB::raw('sum(amount / 100) as sum'))
+            ->orderBy('total', 'desc')
             ->get();
 
         return [
@@ -29,7 +33,7 @@ class TrxCategoriesChart extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Categories',
-                    'data' => $trx->pluck('sum')->toArray(),
+                    'data' => $trx->pluck('total')->toArray(),
                     'backgroundColor' => $trx->pluck('category.colour')->toArray(),
                 ],
             ],

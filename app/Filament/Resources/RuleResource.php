@@ -28,6 +28,8 @@ class RuleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cpu-chip';
 
+    protected static ?string $navigationGroup = 'Categorization';
+
     public static function form(Form $form): Form
     {
         return $form

@@ -26,9 +26,11 @@ class ByCategoryTable extends BaseWidget
                 Transaction::query()
                     ->select([
                         'category_id',
-                        DB::raw('SUM(amount) as total'),
+                        // Use raw SQL to sum the amount column and format as currency
+                        DB::raw('SUM(amount) as total')
                     ])
                     ->where('date', '>=', now()->subDays(30))
+                        
                     ->whereNotNull('category_id')
                     ->groupBy('category_id')
                     ->orderBy('total', 'desc')
@@ -38,6 +40,7 @@ class ByCategoryTable extends BaseWidget
                     ->label('Category'),
                 TextColumn::make('total')
                     ->label('Total')
+                    ->money('GBP', 100)
             ])
             ->defaultSort('total', 'desc')
             ->paginated(false);
