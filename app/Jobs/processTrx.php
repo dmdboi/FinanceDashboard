@@ -12,14 +12,14 @@ class processTrx implements ShouldQueue
 {
     use Queueable;
 
-    public $file;
+    public $filePath;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($file)
+    public function __construct($filePath)
     {
-        $this->file = $file;
+        $this->filePath = $filePath;
     }
 
     /**
@@ -28,7 +28,12 @@ class processTrx implements ShouldQueue
     public function handle(): void
     {
         // Read the file contents
-        $fileContents = Storage::disk('public')->get($this->file);
+        $fileContents = Storage::drive('public')->get($this->filePath);
+
+        // If the file is not UTF-8, convert it
+        if (!mb_check_encoding($fileContents, 'UTF-8')) {
+            $fileContents = mb_convert_encoding($fileContents, 'UTF-8');
+        }
 
         // Split contents into individual transactions
         $transactions = explode("\t\t\t\t\t\t\n", $fileContents); // Assuming double newline separates transactions
@@ -45,7 +50,6 @@ class processTrx implements ShouldQueue
 
     public function process($transaction): void
     {
-        // Description: Process the transaction
 
         // Remove unnecessary characters (such as special characters)
         $transaction = str_replace("\u{A0}", "", $transaction);
@@ -86,7 +90,7 @@ class processTrx implements ShouldQueue
             'trx_date' => \Carbon\Carbon::createFromFormat('d/m/Y', $data['date']),
             'description' => $data['description'],
             'amount' => $data['amount'],
-            'user_id' => auth()->id(),
+            'user_id' => '1',
             'type' => $data['type'],
         ]);
 

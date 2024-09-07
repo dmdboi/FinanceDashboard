@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\processTrx;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,4 +22,13 @@ class File extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // After create hook
+    protected static function booted()
+    {
+        static::created(function ($file) {
+            processTrx::dispatch($file->path);
+        });
+    }
+
 }

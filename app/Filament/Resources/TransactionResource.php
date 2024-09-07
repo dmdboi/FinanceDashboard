@@ -137,7 +137,7 @@ class TransactionResource extends Resource
                             categorizeTrx::dispatch($trx);
                         }
                     })
-            ]);
+            ])->poll('15s');
     }
 
     public static function getRelations(): array
